@@ -5,18 +5,24 @@ name: Update Metadata
 
 on: [workflow_dispatch]
 
+permissions:
+  contents: read
+
 jobs:
   update-metadata:
+    permissions:
+      contents: write  # for peter-evans/create-pull-request to create branch
+      pull-requests: write  # for peter-evans/create-pull-request to create a PR
     runs-on: ubuntu-latest        
 
     steps:
     - name: Check Out Blockly
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: 'develop'
 
     - name: Use Node.js 16.x
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: 16.x
 
@@ -30,7 +36,7 @@ jobs:
       run: source ./tests/scripts/update_metadata.sh
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@9825ae65b1cb54b543b938503728b432a0176d29
+      uses: peter-evans/create-pull-request@bd72e1b7922d417764d27d30768117ad7da78a0e
       with:
         commit-message: Update build artifact sizes in check_metadata.sh
         delete-branch: true
